@@ -1,0 +1,30 @@
+node_modules
+.next
+out
+dist
+*.log
+.DS_Store
+.env*
+!.env.example
+
+# VitePress
+docs/.vitepress/cache
+docs/.vitepress/dist
+
+# Electron build artifacts
+electron/build/icon.png
+
+# IDE / Editor
+.idea
+.vscode
+*.swp
+*.swo
+
+# OS
+Thumbs.db
+
+# Build / Cache
+.turbo
+*.tsbuildinfo
+.cache
+coverage

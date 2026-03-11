@@ -1,0 +1,33 @@
+export const PROVIDER_KEYS: Record<string, string[]> = {
+  "openai-api-key": ["openai"],
+  "anthropic-api-key": ["anthropic"],
+  "mistral-api-key": ["mistral"],
+  "gemini-api-key": ["gemini", "google"],
+  "xai-api-key": ["xai"],
+  "moonshot-api-key": ["moonshot", "moonshotai"],
+  "minimax-api-key": ["minimax"],
+  "qianfan-api-key": ["qianfan", "baidu"],
+  "volcengine-api-key": ["volcengine"],
+  "zai-api-key": ["zai", "z.ai"],
+  "opencode-zen": ["opencode", "open-code"],
+  "custom-api-key": ["custom", "ollama", "litellm", "openai-completions"],
+  "cloudflare-ai-gateway-api-key": ["cloudflare-ai-gateway", "cloudflare"],
+};
+
+export const AUTH_MAP: Record<string, string> = {
+  openai: "openai-api-key",
+  anthropic: "anthropic-api-key",
+  mistral: "mistral-api-key",
+  gemini: "gemini-api-key",
+  xai: "xai-api-key",
+  moonshot: "moonshot-api-key",
+  minimax: "minimax-api-key",
+  qianfan: "qianfan-api-key",
+  volcengine: "volcengine-api-key",
+  zai: "zai-api-key",
+  opencode: "opencode-zen",
+  custom: "custom-api-key",
+  ollama: "custom-api-key",
+  litellm: "custom-api-key",
+  "openai-completions": "custom-api-key",
+};

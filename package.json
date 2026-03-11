@@ -1,0 +1,29 @@
+{
+  "name": "openclaw-installation-assistant",
+  "version": "0.1.0",
+  "private": true,
+  "description": "OpenClaw 图形化安装助手",
+  "scripts": {
+    "dev": "pnpm docs:dev",
+    "dev:electron": "pnpm --filter openclaw-installation-assistant-electron dev",
+    "docs:dev": "pnpm --filter openclaw-installation-assistant-docs dev",
+    "docs:build": "pnpm --filter openclaw-installation-assistant-docs build",
+    "build": "pnpm docs:build",
+    "build:electron": "pnpm --filter openclaw-installation-assistant-electron run generate-icon && pnpm --filter openclaw-installation-assistant-electron run build",
+    "package:mac": "pnpm --filter openclaw-installation-assistant-electron run generate-icon && pnpm --filter openclaw-installation-assistant-electron run build && pnpm --filter openclaw-installation-assistant-electron run package:mac",
+    "package:win": "pnpm --filter openclaw-installation-assistant-electron run generate-icon && pnpm --filter openclaw-installation-assistant-electron run build && pnpm --filter openclaw-installation-assistant-electron run package:win",
+    "package:linux": "pnpm --filter openclaw-installation-assistant-electron run generate-icon && pnpm --filter openclaw-installation-assistant-electron run build && pnpm --filter openclaw-installation-assistant-electron run package:linux",
+    "lint": "pnpm -r run lint"
+  },
+  "author": "",
+  "license": "MIT",
+  "engines": {
+    "node": ">=20"
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.0",
+    "cross-env": "^7.0.3",
+    "wait-on": "^8.0.1"
+  },
+  "packageManager": "pnpm@9.14.2"
+}

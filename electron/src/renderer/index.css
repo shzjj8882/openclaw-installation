@@ -1,0 +1,58 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 260 20% 6%;
+    --foreground: 0 0% 98%;
+    --card: 260 18% 8%;
+    --card-foreground: 0 0% 98%;
+    --primary: 262 83% 58%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 260 15% 14%;
+    --secondary-foreground: 0 0% 98%;
+    --muted: 260 15% 14%;
+    --muted-foreground: 260 5% 60%;
+    --accent: 262 50% 20%;
+    --accent-foreground: 0 0% 98%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 260 15% 18%;
+    --input: 260 15% 18%;
+    --popover: 260 18% 10%;
+    --popover-foreground: 0 0% 98%;
+    --ring: 262 83% 58%;
+    --radius: 0.75rem;
+  }
+}
+
+* {
+  border-color: hsl(var(--border));
+}
+
+body {
+  background: hsl(var(--background));
+  color: hsl(var(--foreground));
+  font-feature-settings: "rlig" 1, "calt" 1;
+  overflow-x: hidden;
+}
+
+/* 渐变背景 */
+.gradient-bg {
+  background: 
+    radial-gradient(ellipse 80% 50% at 50% -20%, hsl(262 83% 58% / 0.15), transparent),
+    radial-gradient(ellipse 60% 40% at 100% 0%, hsl(262 60% 40% / 0.08), transparent),
+    radial-gradient(ellipse 60% 40% at 0% 0%, hsl(262 60% 40% / 0.08), transparent),
+    hsl(var(--background));
+}
+
+/* 玻璃拟态 */
+.glass {
+  @apply bg-white/5 backdrop-blur-xl border border-white/10;
+}
+
+/* xterm.js 输入框在 Electron 中需提升 z-index 才能接收键盘焦点 */
+.xterm .xterm-helper-textarea {
+  z-index: 10 !important;
+}

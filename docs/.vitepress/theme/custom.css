@@ -1,0 +1,108 @@
+/* OpenClaw 主题 - 与 Electron 应用保持一致 (primary: hsl(262 83% 58%)) */
+
+:root {
+  /* VitePress 1.6+ 使用 brand-1/2/3，需全部覆盖以应用到所有页面 */
+  --vp-c-brand-1: #8b5cf6;
+  --vp-c-brand-2: #a78bfa;
+  --vp-c-brand-3: #7c3aed;
+  --vp-c-brand-soft: rgba(139, 92, 246, 0.14);
+
+  --vp-c-brand: #8b5cf6;
+  --vp-c-brand-light: #a78bfa;
+  --vp-c-brand-lighter: #c4b5fd;
+  --vp-c-brand-dark: #7c3aed;
+  --vp-c-brand-darker: #6d28d9;
+  --vp-custom-block-tip-border: var(--vp-c-brand);
+  --vp-custom-block-tip-bg: rgba(139, 92, 246, 0.08);
+  --vp-custom-block-tip-text: var(--vp-c-brand-dark);
+
+  /* 内联代码背景与主题一致，避免色块突兀 */
+  --vp-code-bg: var(--vp-c-brand-soft);
+}
+
+.dark {
+  --vp-c-brand-1: #a78bfa;
+  --vp-c-brand-2: #c4b5fd;
+  --vp-c-brand-3: #8b5cf6;
+  --vp-c-brand-soft: rgba(139, 92, 246, 0.16);
+
+  --vp-c-brand: #a78bfa;
+  --vp-c-brand-light: #c4b5fd;
+  --vp-c-brand-lighter: #ddd6fe;
+  --vp-c-brand-dark: #8b5cf6;
+  --vp-c-brand-darker: #7c3aed;
+
+  /* 与 Electron 一致的背景色与渐变 */
+  --vp-c-bg: hsl(260 20% 6%);
+  --vp-c-bg-alt: hsl(260 18% 8%);
+  --vp-c-bg-elv: hsl(260 15% 10%);
+  --vp-c-bg-soft: hsl(260 15% 12%);
+
+  --vp-code-bg: var(--vp-c-brand-soft);
+}
+
+.dark body {
+  background:
+    radial-gradient(ellipse 80% 50% at 50% -20%, hsl(262 83% 58% / 0.15), transparent),
+    radial-gradient(ellipse 60% 40% at 100% 0%, hsl(262 60% 40% / 0.08), transparent),
+    radial-gradient(ellipse 60% 40% at 0% 0%, hsl(262 60% 40% / 0.08), transparent),
+    hsl(260 20% 6%);
+}
+
+/* 首页 Hero 样式 */
+.VPHero .name {
+  background: linear-gradient(135deg, #8b5cf6 0%, #a78bfa 50%, #c4b5fd 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.VPHero .tagline {
+  color: var(--vp-c-text-2);
+}
+
+/* 卡片悬停效果 */
+.VPFeature {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.VPFeature:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+}
+
+/* 自定义块样式 */
+.custom-block.tip {
+  border-color: var(--vp-c-brand);
+  background: var(--vp-custom-block-tip-bg);
+}
+
+.custom-block.tip .custom-block-title {
+  color: var(--vp-custom-block-tip-text);
+}
+
+/* 右侧「On this page」大纲：激活/悬停时使用主题色 */
+.VPDocAsideOutline .outline-link:hover,
+.VPDocAsideOutline .outline-link.active {
+  color: var(--vp-c-brand-1) !important;
+}
+
+.VPDocAsideOutline .outline-marker {
+  background-color: var(--vp-c-brand-1);
+}
+
+/* 顶部导航栏使用纯色背景，不显示渐变 */
+.VPNavBar {
+  background-color: var(--vp-nav-bg-color) !important;
+}
+
+/* 侧边栏透明仅 PC 端（≥960px），移动端保持实色 */
+@media (min-width: 960px) {
+  :root {
+    --vp-sidebar-bg-color: transparent;
+  }
+
+  .dark {
+    --vp-sidebar-bg-color: transparent;
+  }
+}

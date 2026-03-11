@@ -1,0 +1,21 @@
+{
+  "name": "openclaw-installation-assistant-docs",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vitepress dev",
+    "build": "vitepress build",
+    "preview": "vitepress preview",
+    "gen-icons": "node scripts/generate-feature-icons.mjs",
+    "gen-logo-dark": "node scripts/generate-logo-dark.mjs"
+  },
+  "devDependencies": {
+    "sharp": "^0.34.5",
+    "vitepress": "^1.6.4"
+  },
+  "dependencies": {
+    "@icon-park/svg": "^1.4.2",
+    "@icon-park/vue-next": "^1.4.2"
+  }
+}
