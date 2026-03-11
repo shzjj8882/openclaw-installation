@@ -66,6 +66,15 @@ electron/
 | Windows | `pnpm package:win` | NSIS 安装程序、Portable |
 | Linux | `pnpm package:linux` | AppImage、deb |
 
+### CI 自动发布
+
+推送 `v*` 标签（如 `v0.1.0`）后，GitHub Actions 会自动构建三平台安装包并发布到 [Releases](https://github.com/shzjj8882/openclaw-installation/releases)：
+
+```bash
+git tag v0.1.0
+git push origin v0.1.0
+```
+
 ---
 
 ## 安装环境要求
