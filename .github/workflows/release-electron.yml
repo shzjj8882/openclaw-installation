@@ -22,6 +22,9 @@ jobs:
           node-version: "20"
           cache: "pnpm"
 
+      - name: Install Python setuptools (for node-gyp)
+        run: python3 -m pip install setuptools
+
       - name: Install dependencies
         run: pnpm install
 
@@ -46,6 +49,9 @@ jobs:
           node-version: "20"
           cache: "pnpm"
 
+      - name: Install Python setuptools (for node-gyp)
+        run: py -m pip install setuptools
+
       - name: Install dependencies
         run: pnpm install
 
@@ -69,6 +75,9 @@ jobs:
         with:
           node-version: "20"
           cache: "pnpm"
+
+      - name: Install Python setuptools (for node-gyp)
+        run: python3 -m pip install setuptools
 
       - name: Install dependencies
         run: pnpm install
