@@ -17,13 +17,14 @@ jobs:
 
       - uses: pnpm/action-setup@v4
 
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
       - uses: actions/setup-node@v4
         with:
           node-version: "20"
           cache: "pnpm"
-
-      - name: Install Python setuptools (for node-gyp)
-        run: python3 -m pip install --break-system-packages setuptools
 
       - name: Install dependencies
         run: pnpm install
@@ -44,13 +45,14 @@ jobs:
 
       - uses: pnpm/action-setup@v4
 
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
       - uses: actions/setup-node@v4
         with:
           node-version: "20"
           cache: "pnpm"
-
-      - name: Install Python setuptools (for node-gyp)
-        run: py -m pip install setuptools
 
       - name: Install dependencies
         run: pnpm install
@@ -71,13 +73,14 @@ jobs:
 
       - uses: pnpm/action-setup@v4
 
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
       - uses: actions/setup-node@v4
         with:
           node-version: "20"
           cache: "pnpm"
-
-      - name: Install Python setuptools (for node-gyp)
-        run: python3 -m pip install --break-system-packages setuptools
 
       - name: Install dependencies
         run: pnpm install
