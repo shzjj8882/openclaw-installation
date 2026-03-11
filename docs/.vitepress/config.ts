@@ -4,7 +4,7 @@ import { iconParkIcons } from "./iconpark";
 export default defineConfig({
   title: "OpenClaw 安装助手",
   description: "OpenClaw 图形化安装助手 - 让 AI 助手触手可及",
-  base: "/openclaw-installation-assistant/",
+  base: "/openclaw-installation/",
   lang: "zh-CN",
   head: [
     ["link", { rel: "icon", href: "/logo-dark.svg", type: "image/svg+xml" }],
@@ -19,7 +19,7 @@ export default defineConfig({
       { text: "下载", link: "/guide/download" },
       { text: "功能概览", link: "/guide/overview" },
       { text: "安装流程", link: "/guide/install" },
-      { text: "GitHub", link: "https://github.com/openclaw/openclaw-installation-assistant" },
+      { text: "GitHub", link: "https://github.com/shzjj8882/openclaw-installation" },
     ],
     sidebar: [
       {
@@ -33,7 +33,7 @@ export default defineConfig({
       },
     ],
     socialLinks: [
-      { icon: { svg: iconParkIcons.github }, link: "https://github.com/openclaw/openclaw-installation-assistant" },
+      { icon: { svg: iconParkIcons.github }, link: "https://github.com/shzjj8882/openclaw-installation" },
     ],
     footer: {
       message: "OpenClaw 安装助手 · 图形化引导，让 AI 助手触手可及",

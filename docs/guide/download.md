@@ -8,8 +8,8 @@
 
 | 设备类型 | 格式 | 下载 |
 |----------|------|------|
-| Apple Silicon (M1/M2/M3) | DMG 安装包 | [GitHub Releases](https://github.com/openclaw/openclaw-installation-assistant/releases/latest) |
-| Intel 芯片 | DMG 安装包 | [GitHub Releases](https://github.com/openclaw/openclaw-installation-assistant/releases/latest) |
+| Apple Silicon (M1/M2/M3) | DMG 安装包 | [GitHub Releases](https://github.com/shzjj8882/openclaw-installation/releases/latest) |
+| Intel 芯片 | DMG 安装包 | [GitHub Releases](https://github.com/shzjj8882/openclaw-installation/releases/latest) |
 
 ::: tip 如何选择
 - **Apple Silicon**：2020 年及之后购买的 Mac（M1/M2/M3 等）
@@ -20,9 +20,9 @@
 
 | 设备类型 | 格式 | 下载 |
 |----------|------|------|
-| x64 (64 位) | NSIS 安装包 | [GitHub Releases](https://github.com/openclaw/openclaw-installation-assistant/releases/latest) |
-| x64 (64 位) | 便携版（免安装） | [GitHub Releases](https://github.com/openclaw/openclaw-installation-assistant/releases/latest) |
-| ARM64 | NSIS 安装包 | [GitHub Releases](https://github.com/openclaw/openclaw-installation-assistant/releases/latest) |
+| x64 (64 位) | NSIS 安装包 | [GitHub Releases](https://github.com/shzjj8882/openclaw-installation/releases/latest) |
+| x64 (64 位) | 便携版（免安装） | [GitHub Releases](https://github.com/shzjj8882/openclaw-installation/releases/latest) |
+| ARM64 | NSIS 安装包 | [GitHub Releases](https://github.com/shzjj8882/openclaw-installation/releases/latest) |
 
 ::: tip 如何选择
 - **x64**：绝大多数 Windows 电脑
@@ -33,10 +33,10 @@
 
 | 设备类型 | 格式 | 下载 |
 |----------|------|------|
-| x64 (amd64) | AppImage | [GitHub Releases](https://github.com/openclaw/openclaw-installation-assistant/releases/latest) |
-| x64 (amd64) | deb 包 (Debian/Ubuntu) | [GitHub Releases](https://github.com/openclaw/openclaw-installation-assistant/releases/latest) |
-| ARM64 | AppImage | [GitHub Releases](https://github.com/openclaw/openclaw-installation-assistant/releases/latest) |
+| x64 (amd64) | AppImage | [GitHub Releases](https://github.com/shzjj8882/openclaw-installation/releases/latest) |
+| x64 (amd64) | deb 包 (Debian/Ubuntu) | [GitHub Releases](https://github.com/shzjj8882/openclaw-installation/releases/latest) |
+| ARM64 | AppImage | [GitHub Releases](https://github.com/shzjj8882/openclaw-installation/releases/latest) |
 
 ---
 
-前往 [GitHub Releases](https://github.com/openclaw/openclaw-installation-assistant/releases/latest) 查看最新版本并下载对应平台的安装包。
+前往 [GitHub Releases](https://github.com/shzjj8882/openclaw-installation/releases/latest) 查看最新版本并下载对应平台的安装包。
