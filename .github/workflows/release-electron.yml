@@ -106,6 +106,9 @@ jobs:
         with:
           path: release-artifacts
 
+      - name: Remove builder-debug.yml (duplicate across platforms causes upload conflict)
+        run: find release-artifacts -name "builder-debug.yml" -delete
+
       - name: Create Release
         uses: softprops/action-gh-release@v2
         with:

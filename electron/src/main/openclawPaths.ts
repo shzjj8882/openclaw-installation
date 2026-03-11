@@ -3,6 +3,57 @@ import os from "os";
 import fs from "fs";
 import { execSync } from "child_process";
 
+/** 用于环境检测的 PATH，包含 nvm/fnm/volta 等常见 Node 安装路径（GUI 应用不继承 shell PATH） */
+export function getEnvCheckPath(): string {
+  const home = os.homedir();
+  const pathSep = process.platform === "win32" ? ";" : ":";
+  const extra: string[] = [];
+
+  if (process.platform === "darwin" || process.platform === "linux") {
+    extra.push("/opt/homebrew/bin", "/usr/local/bin", path.join(home, ".local", "bin"));
+    // nvm
+    const nvmVersions = path.join(home, ".nvm", "versions", "node");
+    if (fs.existsSync(nvmVersions)) {
+      try {
+        const vers = fs.readdirSync(nvmVersions);
+        for (const v of vers) {
+          const bin = path.join(nvmVersions, v, "bin");
+          if (fs.existsSync(bin)) extra.push(bin);
+        }
+      } catch {
+        /* ignore */
+      }
+    }
+    // fnm
+    for (const base of [path.join(home, ".fnm", "node-versions"), path.join(home, ".local", "share", "fnm", "node-versions")]) {
+      if (fs.existsSync(base)) {
+        try {
+          const vers = fs.readdirSync(base);
+          for (const v of vers) {
+            const bin = path.join(base, v, "installation", "bin");
+            if (fs.existsSync(bin)) extra.push(bin);
+          }
+        } catch {
+          /* ignore */
+        }
+      }
+    }
+    // volta
+    extra.push(path.join(home, ".volta", "bin"));
+  } else {
+    // Windows
+    extra.push(
+      path.join(process.env.ProgramFiles || "C:\\Program Files", "nodejs"),
+      path.join(process.env["ProgramFiles(x86)"] || "C:\\Program Files (x86)", "nodejs"),
+      path.join(home, "AppData", "Roaming", "npm"),
+      path.join(home, "AppData", "Local", "fnm"),
+      path.join(home, "scoop", "apps", "nodejs", "current")
+    );
+  }
+
+  return [...extra, process.env.PATH || ""].join(pathSep);
+}
+
 export function getOpenClawPathEnv(): string {
   const localBin = path.join(os.homedir(), ".local", "bin");
   const extraPaths =

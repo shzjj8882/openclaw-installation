@@ -1,9 +1,7 @@
-import path from "path";
-import os from "os";
 import { ipcMain, shell, app } from "electron";
 import { spawn } from "child_process";
 import { execSync } from "child_process";
-import { getOpenClawPathEnv } from "./openclawPaths";
+import { getOpenClawPathEnv, getEnvCheckPath } from "./openclawPaths";
 
 const ENV_CHECK_CACHE_MS = 5000;
 let envCheckCache: { result: { openclaw: boolean; nodejs: boolean; homebrew: boolean; versions: Record<string, string> }; ts: number } | null = null;
@@ -14,23 +12,22 @@ export function registerEnvHandlers(): void {
     if (envCheckCache && now - envCheckCache.ts < ENV_CHECK_CACHE_MS) return envCheckCache.result;
 
     const result = { openclaw: false, nodejs: false, homebrew: false, versions: {} as Record<string, string> };
+    const envForCheck = { ...process.env, PATH: getEnvCheckPath() } as NodeJS.ProcessEnv;
     try {
-      const nodeVersion = execSync("node -v", { encoding: "utf8" }).trim();
+      const nodeVersion = execSync("node -v", { encoding: "utf8", env: envForCheck }).trim();
       result.nodejs = !!nodeVersion;
       result.versions.node = nodeVersion.replace(/^v/, "");
     } catch {
       result.nodejs = false;
     }
     try {
-      const localBin = path.join(os.homedir(), ".local", "bin");
-      const envWithLocal = { ...process.env, PATH: `${localBin}:${process.env.PATH || ""}` };
-      const openclawVersion = execSync("openclaw --version", { encoding: "utf8", stdio: ["pipe", "pipe", "ignore"], env: envWithLocal }).trim();
+      const openclawVersion = execSync("openclaw --version", { encoding: "utf8", stdio: ["pipe", "pipe", "ignore"], env: envForCheck }).trim();
       result.openclaw = !!openclawVersion;
       result.versions.openclaw = openclawVersion || "installed";
     } catch {
       try {
         const cmd = process.platform === "win32" ? "where openclaw" : "which openclaw";
-        execSync(cmd, { encoding: "utf8", stdio: ["pipe", "pipe", "ignore"] });
+        execSync(cmd, { encoding: "utf8", stdio: ["pipe", "pipe", "ignore"], env: envForCheck });
         result.openclaw = true;
         result.versions.openclaw = "installed";
       } catch {
@@ -39,7 +36,7 @@ export function registerEnvHandlers(): void {
     }
     if (process.platform === "darwin" || process.platform === "linux") {
       try {
-        execSync("which brew", { encoding: "utf8" });
+        execSync("which brew", { encoding: "utf8", env: envForCheck });
         result.homebrew = true;
       } catch {
         result.homebrew = false;
