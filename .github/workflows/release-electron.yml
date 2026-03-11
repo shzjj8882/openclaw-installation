@@ -109,6 +109,11 @@ jobs:
       - name: Remove builder-debug.yml (duplicate across platforms causes upload conflict)
         run: find release-artifacts -name "builder-debug.yml" -delete
 
+      - name: Delete existing release (for re-run, avoid already_exists)
+        run: gh release delete ${{ github.ref_name }} --yes 2>/dev/null || true
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
       - name: Create Release
         uses: softprops/action-gh-release@v2
         with:
