@@ -1,6 +1,6 @@
 {
   "name": "openclaw-installation-assistant",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "private": true,
   "description": "OpenClaw 图形化安装助手",
   "scripts": {

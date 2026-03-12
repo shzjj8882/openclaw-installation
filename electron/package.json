@@ -1,6 +1,6 @@
 {
   "name": "openclaw-installation-assistant-electron",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "private": true,
   "description": "OpenClaw 安装助手 - Electron 桌面应用",
   "main": "out/main/index.js",
