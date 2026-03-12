@@ -2,7 +2,6 @@ import { useState, useCallback } from "react";
 import { useFooterSetter } from "@/contexts/AppContext";
 import { Button } from "@/components/ui/button";
 import { StepFooter } from "./StepFooter";
-import { Progress } from "@/components/ui/progress";
 import type { EnvCheckResult } from "@/types";
 import { CheckCircle2, Download, Loader2 } from "lucide-react";
 
@@ -12,7 +11,7 @@ interface InstallStepOpenClawProps {
   onPrev: () => void;
   isFirst: boolean;
   isLast: boolean;
-  onRefresh: () => Promise<unknown>;
+  onRefresh: (force?: boolean) => Promise<unknown>;
 }
 
 export function InstallStepOpenClaw({
@@ -55,7 +54,7 @@ export function InstallStepOpenClaw({
       } else {
         await electron.installOpenClaw();
       }
-      await onRefresh();
+      await onRefresh(true);
     } catch (err) {
       setInstallError(err instanceof Error ? err.message : "安装失败");
     } finally {
@@ -87,10 +86,19 @@ export function InstallStepOpenClaw({
           {installing ? (
             <div className="space-y-4 p-5 rounded-xl bg-white/5 border border-white/10">
               <div className="flex items-center gap-3 text-sm">
-                <Loader2 className="h-5 w-5 animate-spin text-primary" />
-                <span className="font-medium">{progressMsg}</span>
+                <Loader2 className="h-5 w-5 animate-spin text-primary shrink-0" />
+                <span className="font-medium">{progressMsg || "安装中…"}</span>
               </div>
-              <Progress value={progress} />
+              <div className="relative h-2.5 w-full overflow-hidden rounded-full bg-primary/20">
+                {progress < 10 ? (
+                  <div className="h-full w-1/3 bg-primary animate-progress-indeterminate rounded-full" />
+                ) : (
+                  <div
+                    className="h-full w-full bg-primary transition-all duration-500 ease-out rounded-full"
+                    style={{ transform: `translateX(-${100 - progress}%)` }}
+                  />
+                )}
+              </div>
             </div>
           ) : (
             <Button onClick={handleInstall} className="gap-2">

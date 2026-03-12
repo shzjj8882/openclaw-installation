@@ -21,9 +21,9 @@ function envCheckLog(msg: string, data?: unknown): void {
 }
 
 export function registerEnvHandlers(): void {
-  ipcMain.handle("check-env", async () => {
+  ipcMain.handle("check-env", async (_, force?: boolean) => {
     const now = Date.now();
-    if (envCheckCache && now - envCheckCache.ts < ENV_CHECK_CACHE_MS) return envCheckCache.result;
+    if (!force && envCheckCache && now - envCheckCache.ts < ENV_CHECK_CACHE_MS) return envCheckCache.result;
 
     const result = { openclaw: false, nodejs: false, homebrew: false, versions: {} as Record<string, string> };
     const pathUsed = getEnvCheckPath();

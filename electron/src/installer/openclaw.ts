@@ -86,8 +86,19 @@ export function installOpenClawWithSudo(sendProgress: ProgressFn): Promise<{ ok:
     const pathEnv = getEnvCheckPath();
     const escForAppleScript = (s: string) => s.replace(/\\/g, "\\\\").replace(/"/g, '\\"');
 
+    const startHeartbeat = () => {
+      let p = 5;
+      const id = setInterval(() => {
+        if (p < 95) {
+          sendProgress(p, "安装中，请稍候…");
+          p += 10;
+        }
+      }, 2000);
+      return () => clearInterval(id);
+    };
+
     if (process.platform === "darwin") {
-      // 使用 AppleScript quoted form of 分别转义 PATH 和 npm 路径，避免嵌套转义问题
+      const stopHeartbeat = startHeartbeat();
       const pathEsc = escForAppleScript(pathEnv);
       const npmEsc = escForAppleScript(npmPath);
       const cmd = `do shell script "export PATH=" & quoted form of "${pathEsc}" & "; " & quoted form of "${npmEsc}" & " install -g openclaw@latest" with administrator privileges`;
@@ -99,6 +110,7 @@ export function installOpenClawWithSudo(sendProgress: ProgressFn): Promise<{ ok:
       proc.stderr?.on("data", (d) => { stderr += d.toString(); });
 
       proc.on("close", (code) => {
+        stopHeartbeat();
         if (code === 0) {
           sendProgress(100, "OpenClaw 安装完成");
           resolve({ ok: true });
@@ -106,8 +118,12 @@ export function installOpenClawWithSudo(sendProgress: ProgressFn): Promise<{ ok:
           reject(new Error(stderr || `安装失败，退出码: ${code}`));
         }
       });
-      proc.on("error", reject);
+      proc.on("error", (err) => {
+        stopHeartbeat();
+        reject(err);
+      });
     } else if (process.platform === "linux") {
+      const stopHeartbeat = startHeartbeat();
       const pathSafe = pathEnv.replace(/\n/g, ":");
       const proc = spawn("pkexec", ["env", `PATH=${pathSafe}`, npmPath, "install", "-g", "openclaw@latest"], {
         stdio: ["ignore", "pipe", "pipe"],
@@ -118,6 +134,7 @@ export function installOpenClawWithSudo(sendProgress: ProgressFn): Promise<{ ok:
       proc.stderr?.on("data", (d) => { stderr += d.toString(); });
 
       proc.on("close", (code) => {
+        stopHeartbeat();
         if (code === 0) {
           sendProgress(100, "OpenClaw 安装完成");
           resolve({ ok: true });
@@ -126,6 +143,7 @@ export function installOpenClawWithSudo(sendProgress: ProgressFn): Promise<{ ok:
         }
       });
       proc.on("error", () => {
+        stopHeartbeat();
         reject(new Error("pkexec 不可用，请使用「在终端运行」手动执行 sudo npm install -g openclaw@latest"));
       });
     } else {

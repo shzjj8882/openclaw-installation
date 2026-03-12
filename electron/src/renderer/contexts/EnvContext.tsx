@@ -7,7 +7,7 @@ interface EnvContextValue {
   envCheckLoading: boolean;
   setAppState: (s: AppState) => void;
   setEnvCheck: (r: EnvCheckResult | null) => void;
-  refreshEnvCheck: () => Promise<EnvCheckResult | null>;
+  refreshEnvCheck: (force?: boolean) => Promise<EnvCheckResult | null>;
 }
 
 const EnvContext = createContext<EnvContextValue | null>(null);
@@ -17,11 +17,11 @@ export function EnvProvider({ children }: { children: ReactNode }) {
   const [envCheck, setEnvCheck] = useState<EnvCheckResult | null>(null);
   const [envCheckLoading, setEnvCheckLoading] = useState(true);
 
-  const refreshEnvCheck = useCallback(async (): Promise<EnvCheckResult | null> => {
+  const refreshEnvCheck = useCallback(async (force?: boolean): Promise<EnvCheckResult | null> => {
     setEnvCheckLoading(true);
     try {
       if (window.electron?.checkEnv) {
-        const result = await window.electron.checkEnv();
+        const result = await window.electron.checkEnv(force);
         setEnvCheck(result);
         return result;
       }

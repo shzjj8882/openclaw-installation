@@ -1,7 +1,7 @@
 import { contextBridge, ipcRenderer } from "electron";
 
 contextBridge.exposeInMainWorld("electron", {
-  checkEnv: () => ipcRenderer.invoke("check-env"),
+  checkEnv: (force?: boolean) => ipcRenderer.invoke("check-env", force),
   refreshOnboardSchema: () => ipcRenderer.invoke("refresh-onboard-schema"),
   onOnboardSchema: (callback: (schema: unknown) => void) => {
     const handler = (_: unknown, schema: unknown) => callback(schema);
