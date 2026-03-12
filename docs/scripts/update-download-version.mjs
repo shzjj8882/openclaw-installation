@@ -25,11 +25,10 @@ const content = `# 下载
 | 设备类型 | 格式 | 下载 |
 |----------|------|------|
 | Apple Silicon (M1/M2/M3) | DMG 安装包 | [下载](${dl(`OpenClaw 安装助手-${version}-arm64.dmg`)}) |
-| Apple Silicon (M1/M2/M3) | ZIP 压缩包 | [下载](${dl(`OpenClaw 安装助手-${version}-arm64-mac.zip`)}) |
 
 ::: tip 如何选择
 - **Apple Silicon**：2020 年及之后购买的 Mac（M1/M2/M3 等）
-- **Intel**：当前 CI 仅构建 Apple Silicon 版本，Intel 用户请前往 [Releases](${base}) 查看是否有对应构建
+- **Intel**：当前 CI 仅构建 Apple Silicon 版本，Intel 用户请前往 [Releases](${base}) 查看
 :::
 
 ### Windows
@@ -37,7 +36,6 @@ const content = `# 下载
 | 设备类型 | 格式 | 下载 |
 |----------|------|------|
 | x64 (64 位) | NSIS 安装包 | [下载](${dl(`OpenClaw 安装助手 Setup ${version}.exe`)}) |
-| x64 (64 位) | 便携版（免安装） | [下载](${dl(`OpenClaw 安装助手 ${version}.exe`)}) |
 
 ::: tip 如何选择
 - **x64**：绝大多数 Windows 电脑
@@ -48,7 +46,6 @@ const content = `# 下载
 
 | 设备类型 | 格式 | 下载 |
 |----------|------|------|
-| x64 (amd64) | AppImage | [下载](${dl(`OpenClaw 安装助手-${version}.AppImage`)}) |
 | x64 (amd64) | deb 包 (Debian/Ubuntu) | [下载](${dl(`openclaw-installation-assistant-electron_${version}_amd64.deb`)}) |
 
 ---

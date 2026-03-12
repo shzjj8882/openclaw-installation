@@ -65,22 +65,13 @@
     ],
     "mac": {
       "category": "public.app-category.developer-tools",
-      "target": [
-        "dmg",
-        "zip"
-      ]
+      "target": ["dmg"]
     },
     "win": {
-      "target": [
-        "nsis",
-        "portable"
-      ]
+      "target": ["nsis"]
     },
     "linux": {
-      "target": [
-        "AppImage",
-        "deb"
-      ],
+      "target": ["deb"],
       "maintainer": "OpenClaw <noreply@openclaw.ai>"
     }
   }

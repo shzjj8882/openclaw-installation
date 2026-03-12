@@ -106,8 +106,26 @@ jobs:
         with:
           path: release-artifacts
 
-      - name: Remove builder-debug.yml (duplicate across platforms causes upload conflict)
-        run: find release-artifacts -name "builder-debug.yml" -delete
+      - name: Remove debug/blockmap files
+        run: |
+          find release-artifacts -name "builder-debug.yml" -delete
+          find release-artifacts -name "*.blockmap" -delete
+
+      - name: Create latest copies (for /releases/latest/download/ stable URLs)
+        run: |
+          VER="${{ github.ref_name }}"
+          VER="${VER#v}"
+          ESCAPED_VER=$(echo "$VER" | sed 's/\./\\./g')
+          cd release-artifacts
+          for d in mac win linux; do
+            [ ! -d "$d" ] && continue
+            for f in "$d"/*; do
+              [ -f "$f" ] || continue
+              base=$(basename "$f")
+              latest=$(echo "$base" | sed "s/${ESCAPED_VER}/latest/g")
+              [ "$base" != "$latest" ] && cp "$f" "$d/$latest"
+            done
+          done
 
       - name: Delete existing release (for re-run, avoid already_exists)
         run: gh release delete ${{ github.ref_name }} --yes 2>/dev/null || true
@@ -128,20 +146,5 @@ jobs:
             release-artifacts/win/*
             release-artifacts/linux/*
           draft: false
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Update download page and push to main
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          git remote set-url origin "https://x-access-token:$GITHUB_TOKEN@github.com/${{ github.repository }}.git"
-          git fetch origin main
-          git checkout main
-          git pull origin main
-          node docs/scripts/update-download-version.mjs ${{ github.ref_name }}
-          git add docs/guide/download.md
-          git diff --staged --quiet || git commit -m "docs: 更新下载页为 ${{ github.ref_name }}"
-          git push origin main
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
