@@ -40,6 +40,19 @@ export function getEnvCheckPath(): string {
     }
     // volta
     extra.push(path.join(home, ".volta", "bin"));
+    // asdf
+    const asdfNode = path.join(home, ".asdf", "installs", "nodejs");
+    if (fs.existsSync(asdfNode)) {
+      try {
+        const vers = fs.readdirSync(asdfNode);
+        for (const v of vers) {
+          const bin = path.join(asdfNode, v, "bin");
+          if (fs.existsSync(bin)) extra.push(bin);
+        }
+      } catch {
+        /* ignore */
+      }
+    }
   } else {
     // Windows
     extra.push(

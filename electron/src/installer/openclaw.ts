@@ -83,9 +83,14 @@ export function installOpenClawWithSudo(sendProgress: ProgressFn): Promise<{ ok:
       return;
     }
 
+    const pathEnv = getEnvCheckPath();
+    const escForAppleScript = (s: string) => s.replace(/\\/g, "\\\\").replace(/"/g, '\\"');
+
     if (process.platform === "darwin") {
-      const esc = (s: string) => s.replace(/\\/g, "\\\\").replace(/"/g, '\\"');
-      const cmd = `do shell script (quoted form of "${esc(npmPath)}") & " install -g openclaw@latest" with administrator privileges`;
+      // 使用 AppleScript quoted form of 分别转义 PATH 和 npm 路径，避免嵌套转义问题
+      const pathEsc = escForAppleScript(pathEnv);
+      const npmEsc = escForAppleScript(npmPath);
+      const cmd = `do shell script "export PATH=" & quoted form of "${pathEsc}" & "; " & quoted form of "${npmEsc}" & " install -g openclaw@latest" with administrator privileges`;
       const proc = spawn("osascript", ["-e", cmd], {
         stdio: ["ignore", "pipe", "pipe"],
       });
@@ -103,7 +108,8 @@ export function installOpenClawWithSudo(sendProgress: ProgressFn): Promise<{ ok:
       });
       proc.on("error", reject);
     } else if (process.platform === "linux") {
-      const proc = spawn("pkexec", [npmPath, "install", "-g", "openclaw@latest"], {
+      const pathSafe = pathEnv.replace(/\n/g, ":");
+      const proc = spawn("pkexec", ["env", `PATH=${pathSafe}`, npmPath, "install", "-g", "openclaw@latest"], {
         stdio: ["ignore", "pipe", "pipe"],
       });
       sendProgress(20, "等待授权...");
