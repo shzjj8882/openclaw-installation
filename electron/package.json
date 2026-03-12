@@ -11,8 +11,8 @@
     "build": "electron-vite build",
     "clean": "rm -rf out dist",
     "preview": "electron-vite preview",
-    "package:mac": "electron-builder --mac",
-    "package:win": "electron-builder --win",
+    "package:mac": "electron-builder --mac --x64 --arm64",
+    "package:win": "electron-builder --win --x64 --arm64",
     "package:linux": "electron-builder --linux"
   },
   "author": "OpenClaw <noreply@openclaw.ai>",
@@ -66,12 +66,10 @@
     "mac": {
       "category": "public.app-category.developer-tools",
       "target": ["dmg"],
-      "arch": ["x64", "arm64"],
       "artifactName": "OpenClaw-Installer-${version}-${arch}.${ext}"
     },
     "win": {
       "target": ["nsis"],
-      "arch": ["x64", "arm64"],
       "artifactName": "OpenClaw-Installer-Setup-${version}-${arch}.${ext}"
     },
     "linux": {
