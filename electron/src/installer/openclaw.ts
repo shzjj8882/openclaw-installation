@@ -1,8 +1,20 @@
 import path from "path";
 import os from "os";
-import { spawn } from "child_process";
+import { spawn, execSync } from "child_process";
+import { getEnvCheckPath } from "../main/openclawPaths";
 
 type ProgressFn = (progress: number, message: string) => void;
+
+/** 解析 npm 的完整路径（sudo/pkexec 环境 PATH 受限，需用绝对路径） */
+function resolveNpmPath(): string | null {
+  const env = { ...process.env, PATH: getEnvCheckPath() } as NodeJS.ProcessEnv;
+  try {
+    const out = execSync("command -v npm || which npm", { encoding: "utf8", env }).trim();
+    return out || null;
+  } catch {
+    return null;
+  }
+}
 
 export function installOpenClaw(sendProgress: ProgressFn): Promise<{ ok: boolean }> {
   return new Promise((resolve, reject) => {
@@ -65,8 +77,15 @@ export function installOpenClawWithSudo(sendProgress: ProgressFn): Promise<{ ok:
   return new Promise((resolve, reject) => {
     sendProgress(0, "即将弹出授权窗口，请输入密码...");
 
+    const npmPath = resolveNpmPath();
+    if (!npmPath) {
+      reject(new Error("未找到 npm，请先安装 Node.js 或使用「在终端运行」手动安装"));
+      return;
+    }
+
     if (process.platform === "darwin") {
-      const cmd = 'do shell script "npm install -g openclaw@latest" with administrator privileges';
+      const esc = (s: string) => s.replace(/\\/g, "\\\\").replace(/"/g, '\\"');
+      const cmd = `do shell script (quoted form of "${esc(npmPath)}") & " install -g openclaw@latest" with administrator privileges`;
       const proc = spawn("osascript", ["-e", cmd], {
         stdio: ["ignore", "pipe", "pipe"],
       });
@@ -84,7 +103,7 @@ export function installOpenClawWithSudo(sendProgress: ProgressFn): Promise<{ ok:
       });
       proc.on("error", reject);
     } else if (process.platform === "linux") {
-      const proc = spawn("pkexec", ["npm", "install", "-g", "openclaw@latest"], {
+      const proc = spawn("pkexec", [npmPath, "install", "-g", "openclaw@latest"], {
         stdio: ["ignore", "pipe", "pipe"],
       });
       sendProgress(20, "等待授权...");
