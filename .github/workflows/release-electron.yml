@@ -123,7 +123,7 @@ jobs:
               [ -f "$f" ] || continue
               base=$(basename "$f")
               latest=$(echo "$base" | sed "s/${ESCAPED_VER}/latest/g")
-              [ "$base" != "$latest" ] && cp "$f" "$d/$latest"
+              if [ "$base" != "$latest" ]; then cp "$f" "$d/$latest"; fi
             done
           done
 
