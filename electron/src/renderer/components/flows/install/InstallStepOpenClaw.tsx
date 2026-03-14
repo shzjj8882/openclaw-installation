@@ -111,9 +111,21 @@ export function InstallStepOpenClaw({
             <p className="text-sm text-destructive font-medium">{installError}</p>
           )}
 
-          <Button variant="ghost" size="sm" onClick={onRefresh} disabled={installing}>
-            刷新检测
-          </Button>
+          <div className="flex items-center gap-2">
+            <Button variant="ghost" size="sm" onClick={() => onRefresh()} disabled={installing}>
+              刷新检测
+            </Button>
+            {window.electron?.runOpenClawInstall != null && (
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => window.electron!.runOpenClawInstall!("npm")}
+                disabled={installing}
+              >
+                在终端运行
+              </Button>
+            )}
+          </div>
         </div>
       )}
       <StepFooter

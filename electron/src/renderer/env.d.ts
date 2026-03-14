@@ -4,7 +4,7 @@ declare global {
   interface Window {
     electron?: {
       onOnboardSchema: (cb: (schema: { authOptions: { value: string; label: string; envKey?: string }[]; hasInstallDaemon: boolean }) => void) => () => void;
-      checkEnv: () => Promise<{
+      checkEnv: (force?: boolean) => Promise<{
         openclaw: boolean;
         nodejs: boolean;
         homebrew: boolean;

@@ -84,6 +84,7 @@ export function installOpenClawWithSudo(sendProgress: ProgressFn): Promise<{ ok:
     }
 
     const pathEnv = getEnvCheckPath();
+    const sshAuthSock = process.env.SSH_AUTH_SOCK;
     const escForAppleScript = (s: string) => s.replace(/\\/g, "\\\\").replace(/"/g, '\\"');
 
     const startHeartbeat = () => {
@@ -101,7 +102,18 @@ export function installOpenClawWithSudo(sendProgress: ProgressFn): Promise<{ ok:
       const stopHeartbeat = startHeartbeat();
       const pathEsc = escForAppleScript(pathEnv);
       const npmEsc = escForAppleScript(npmPath);
-      const cmd = `do shell script "export PATH=" & quoted form of "${pathEsc}" & "; " & quoted form of "${npmEsc}" & " install -g openclaw@latest" with administrator privileges`;
+      const sockEsc = sshAuthSock ? escForAppleScript(sshAuthSock) : "";
+      const sshPart = sockEsc
+        ? '"export SSH_AUTH_SOCK=" & quoted form of "' + sockEsc + '" & "; " & '
+        : "";
+      const cmd =
+        'do shell script "export PATH=" & quoted form of "' +
+        pathEsc +
+        '" & "; " & ' +
+        sshPart +
+        'quoted form of "' +
+        npmEsc +
+        '" & " install -g openclaw@latest" with administrator privileges';
       const proc = spawn("osascript", ["-e", cmd], {
         stdio: ["ignore", "pipe", "pipe"],
       });
@@ -115,7 +127,11 @@ export function installOpenClawWithSudo(sendProgress: ProgressFn): Promise<{ ok:
           sendProgress(100, "OpenClaw 安装完成");
           resolve({ ok: true });
         } else {
-          reject(new Error(stderr || `安装失败，退出码: ${code}`));
+          const msg = stderr || `安装失败，退出码: ${code}`;
+          const hint = /Permission denied \(publickey\)|Could not read from remote repository/.test(msg)
+            ? "依赖需要 Git SSH 认证，请使用「在终端运行」在终端中手动安装"
+            : "";
+          reject(new Error(hint || msg));
         }
       });
       proc.on("error", (err) => {
@@ -125,7 +141,9 @@ export function installOpenClawWithSudo(sendProgress: ProgressFn): Promise<{ ok:
     } else if (process.platform === "linux") {
       const stopHeartbeat = startHeartbeat();
       const pathSafe = pathEnv.replace(/\n/g, ":");
-      const proc = spawn("pkexec", ["env", `PATH=${pathSafe}`, npmPath, "install", "-g", "openclaw@latest"], {
+      const envArgs = ["env", `PATH=${pathSafe}`];
+      if (sshAuthSock) envArgs.push(`SSH_AUTH_SOCK=${sshAuthSock}`);
+      const proc = spawn("pkexec", [...envArgs, npmPath, "install", "-g", "openclaw@latest"], {
         stdio: ["ignore", "pipe", "pipe"],
       });
       sendProgress(20, "等待授权...");
@@ -139,7 +157,11 @@ export function installOpenClawWithSudo(sendProgress: ProgressFn): Promise<{ ok:
           sendProgress(100, "OpenClaw 安装完成");
           resolve({ ok: true });
         } else {
-          reject(new Error(stderr || `安装失败，退出码: ${code}`));
+          const msg = stderr || `安装失败，退出码: ${code}`;
+          const hint = /Permission denied \(publickey\)|Could not read from remote repository/.test(msg)
+            ? "依赖需要 Git SSH 认证，请使用「在终端运行」在终端中手动安装"
+            : "";
+          reject(new Error(hint || msg));
         }
       });
       proc.on("error", () => {
