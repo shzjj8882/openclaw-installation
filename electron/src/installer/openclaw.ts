@@ -64,7 +64,7 @@ export function installOpenClaw(sendProgress: ProgressFn): Promise<{ ok: boolean
       } else {
         const isPermission = stderrOutput.includes("EACCES") || stderrOutput.includes("permission");
         const hint = isPermission
-          ? "权限不足，请使用「在终端运行」手动安装"
+          ? "权限不足，请尝试以管理员身份运行本应用后重试"
           : stderrOutput.trim().split("\n").pop()?.slice(0, 80) || "";
         reject(new Error(`npm 安装失败${hint ? `: ${hint}` : `，退出码 ${code}`}`));
       }
@@ -79,7 +79,7 @@ export function installOpenClawWithSudo(sendProgress: ProgressFn): Promise<{ ok:
 
     const npmPath = resolveNpmPath();
     if (!npmPath) {
-      reject(new Error("未找到 npm，请先安装 Node.js 或使用「在终端运行」手动安装"));
+      reject(new Error("未找到 npm，请先安装 Node.js"));
       return;
     }
 
@@ -106,8 +106,13 @@ export function installOpenClawWithSudo(sendProgress: ProgressFn): Promise<{ ok:
       const sshPart = sockEsc
         ? '"export SSH_AUTH_SOCK=" & quoted form of "' + sockEsc + '" & "; " & '
         : "";
+      // 将 GitHub SSH URL 重写为 HTTPS，避免依赖（如 libsignal-node）拉取时需 SSH 认证
+      const gitInsteadOf =
+        'git config --global url.\\"https://github.com/\\".insteadOf \\"ssh://git@github.com/\\" 2>/dev/null; ';
       const cmd =
-        'do shell script "export PATH=" & quoted form of "' +
+        'do shell script "' +
+        gitInsteadOf +
+        'export PATH=" & quoted form of "' +
         pathEsc +
         '" & "; " & ' +
         sshPart +
@@ -129,7 +134,7 @@ export function installOpenClawWithSudo(sendProgress: ProgressFn): Promise<{ ok:
         } else {
           const msg = stderr || `安装失败，退出码: ${code}`;
           const hint = /Permission denied \(publickey\)|Could not read from remote repository/.test(msg)
-            ? "依赖需要 Git SSH 认证，请使用「在终端运行」在终端中手动安装"
+            ? "Git 拉取失败，请检查网络或稍后重试"
             : "";
           reject(new Error(hint || msg));
         }
@@ -143,7 +148,9 @@ export function installOpenClawWithSudo(sendProgress: ProgressFn): Promise<{ ok:
       const pathSafe = pathEnv.replace(/\n/g, ":");
       const envArgs = ["env", `PATH=${pathSafe}`];
       if (sshAuthSock) envArgs.push(`SSH_AUTH_SOCK=${sshAuthSock}`);
-      const proc = spawn("pkexec", [...envArgs, npmPath, "install", "-g", "openclaw@latest"], {
+      // 将 GitHub SSH URL 重写为 HTTPS，避免依赖拉取时需 SSH 认证
+      const shellCmd = `git config --global url."https://github.com/".insteadOf "ssh://git@github.com/" 2>/dev/null; "${npmPath}" install -g openclaw@latest`;
+      const proc = spawn("pkexec", [...envArgs, "sh", "-c", shellCmd], {
         stdio: ["ignore", "pipe", "pipe"],
       });
       sendProgress(20, "等待授权...");
@@ -159,14 +166,14 @@ export function installOpenClawWithSudo(sendProgress: ProgressFn): Promise<{ ok:
         } else {
           const msg = stderr || `安装失败，退出码: ${code}`;
           const hint = /Permission denied \(publickey\)|Could not read from remote repository/.test(msg)
-            ? "依赖需要 Git SSH 认证，请使用「在终端运行」在终端中手动安装"
+            ? "Git 拉取失败，请检查网络或稍后重试"
             : "";
           reject(new Error(hint || msg));
         }
       });
       proc.on("error", () => {
         stopHeartbeat();
-        reject(new Error("pkexec 不可用，请使用「在终端运行」手动执行 sudo npm install -g openclaw@latest"));
+        reject(new Error("pkexec 不可用，请尝试以管理员身份运行本应用"));
       });
     } else {
       reject(new Error("Windows 无需管理员权限，请使用一键安装"));

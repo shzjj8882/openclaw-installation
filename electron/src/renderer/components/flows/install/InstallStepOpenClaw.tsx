@@ -32,17 +32,14 @@ export function InstallStepOpenClaw({
 
   const handleInstall = useCallback(async () => {
     const electron = window.electron;
-    if (!electron?.onInstallProgress) {
-      electron?.runOpenClawInstall?.("npm");
-      return;
-    }
+    if (!electron?.installOpenClaw || !electron?.installOpenClawWithSudo) return;
 
     setInstalling(true);
     setInstallError(null);
     setProgress(0);
     setProgressMsg("即将弹出授权窗口，请输入密码...");
 
-    const unsubscribe = electron.onInstallProgress((data) => {
+    const unsubscribe = electron.onInstallProgress?.((data) => {
       setProgress(data.progress ?? 0);
       setProgressMsg(data.message ?? "");
     });
@@ -58,7 +55,7 @@ export function InstallStepOpenClaw({
     } catch (err) {
       setInstallError(err instanceof Error ? err.message : "安装失败");
     } finally {
-      unsubscribe?.();
+      if (typeof unsubscribe === "function") unsubscribe();
       setInstalling(false);
     }
   }, [onRefresh]);
@@ -115,16 +112,6 @@ export function InstallStepOpenClaw({
             <Button variant="ghost" size="sm" onClick={() => onRefresh()} disabled={installing}>
               刷新检测
             </Button>
-            {window.electron?.runOpenClawInstall != null && (
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => window.electron!.runOpenClawInstall!("npm")}
-                disabled={installing}
-              >
-                在终端运行
-              </Button>
-            )}
           </div>
         </div>
       )}
